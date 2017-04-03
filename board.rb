@@ -6,19 +6,24 @@ class Board
   end
 
   def [](pos)
-    # TODO
+    x, y = pos
+    @grid[x][y]
   end
 
   def []=(pos, piece)
-    # TODO
+    x, y = pos
+    @grid[x][y] = piece
   end
 
   def dup
     # TODO
   end
 
-  def move_piece(color, from_pos, to_pos)
-    # TODO
+  def move_piece(color, start_pos, to_pos)
+    piece = self[start_pos]
+    raise "Invalid move" if piece.nil? #|| !piece.valid_moves.include?(to_pos)
+    self[to_pos] = piece
+    self[start_pos] = nil
   end
 
   def checkmate?
@@ -29,13 +34,14 @@ class Board
 
   def make_starting_grid
     grid = Array.new(8) { Array.new(8) }
-    pawns = Array.new(8) { Pawn.new }
-    back_row = [Rook.new, Knight.new, Bishop.new, Queen.new, King.new,
-                Bishop.new, Knight.new, Rook.new]
-    grid[1] = pawns
-    grid[-2] = pawns.dup
-    grid.last = back_row
-    grid.first = back_row.reverse
+    grid[0] = Array.new(8) {Piece.new}
+    # pawns = Array.new(8) { Pawn.new }
+    # back_row = [Rook.new, Knight.new, Bishop.new, Queen.new, King.new,
+    #             Bishop.new, Knight.new, Rook.new]
+    # grid[1] = pawns
+    # grid[-2] = pawns.dup
+    # grid.last = back_row
+    # grid.first = back_row.reverse
     grid
   end
 
