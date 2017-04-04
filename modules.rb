@@ -27,6 +27,7 @@ module SlidingPiece
     current_pos = @pos.dup
     while current_pos[0].between?(0, 7) && current_pos[1].between?(0, 7)
       directional_moves << current_pos.dup unless current_pos == @pos
+      break if @board[current_pos] && current_pos != @pos
       current_pos[0] += dx
       current_pos[1] += dy
     end
@@ -36,10 +37,18 @@ end
 
 module SteppingPiece
   def moves
+    moves = []
+    move_diffs.each do |move_diff|
+      moves << [@pos[0] + move_diff[0], @pos[1] + move_diff[1]]
+    end
+    moves
   end
 
 
   private
+
   def move_diffs
+    [[2, 1], [2, -1], [1, 2], [1, -2], [-2, 1], [-2, -1], [-1, 2],
+     [-1, -2]]
   end
 end

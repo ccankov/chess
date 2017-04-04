@@ -37,16 +37,21 @@ end
 class King < Piece
   include SteppingPiece
 
-  def initialize
+  def move_diffs
+    [[0, 1], [0, -1], [1, 0], [-1, 0],
+     [1, 1], [-1, -1], [1, -1], [-1, 1]]
+  end
 
+  def symbol
+    :K
   end
 end
 
 class Knight < Piece
   include SteppingPiece
 
-  def initialize
-
+  def symbol
+    :H
   end
 end
 

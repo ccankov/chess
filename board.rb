@@ -41,7 +41,7 @@ class Board
     grid = Array.new(8) { Array.new(8) }
     grid[0].each_index do |row_idx|
       if row_idx == 0
-        grid[0][0] = Queen.new([0,0], self)
+        grid[0][0] = King.new([0, 0], self)
       else
         grid[0][row_idx] = Bishop.new([0, row_idx], self)
       end
