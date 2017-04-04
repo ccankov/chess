@@ -1,6 +1,5 @@
 require_relative 'modules.rb'
 require 'singleton'
-require 'byebug'
 
 class Piece
 
@@ -28,7 +27,8 @@ class Piece
   def valid_moves
     possible_moves = moves
     possible_moves.select do |move|
-      @board[move].is_a?(NullPiece) || @board[move].color != @color
+      move[0].between?(0, 7) && move[1].between?(0, 7) &&
+      (@board[move].is_a?(NullPiece) || @board[move].color != @color)
     end
   end
 
@@ -104,7 +104,9 @@ class Pawn < Piece
     move_diffs = forward_step
     move_forward = []
     move_diffs.each do |diff|
-      move_forward << [@pos[0] + diff[0], @pos[1]]
+      move_pos = [@pos[0] + diff[0], @pos[1]]
+      break unless @board[move_pos].is_a?(NullPiece)
+      move_forward << move_pos
     end
     move_forward + side_attacks
   end
@@ -121,29 +123,32 @@ class Pawn < Piece
 
   def forward_dir
     if @color == :white
-      [-1,0]
+      [-1, 0]
     else
-      [1,0]
+      [1, 0]
     end
   end
 
   def forward_step
     res_arr = []
     res_arr << forward_dir
-    res_arr << forward_dir.map {|n| n * 2} if at_start_row?
+    res_arr << forward_dir.map { |n| n * 2 } if at_start_row?
     res_arr
   end
 
   def side_attacks
     side_att_pos = []
-    if @color == white
-      side_att_pos << [@pos[0] -1, @pos[1] - 1]
-      side_att_pos << [@pos[0] -1, @pos[1] + 1]
+    if @color == :white
+      side_att_pos << [@pos[0] - 1, @pos[1] - 1]
+      side_att_pos << [@pos[0] - 1, @pos[1] + 1]
     else
       side_att_pos << [@pos[0] + 1, @pos[1] - 1]
       side_att_pos << [@pos[0] + 1, @pos[1] + 1]
     end
-    side_att_pos.select {|att_pos| @board[att_pos].color != @color}
+    side_att_pos.select do |att_pos|
+      @board[att_pos].color != @color &&
+      !@board[att_pos].is_a?(NullPiece)
+    end
   end
 
 end

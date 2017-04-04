@@ -39,13 +39,16 @@ class Board
 
   def make_starting_grid
     grid = Array.new(8) { Array.new(8, NullPiece.instance) }
-    grid[0].each_index do |row_idx|
-      if row_idx == 0
-        grid[0][0] = Knight.new([0, 0], self, :white)
-      else
-        grid[0][row_idx] = Bishop.new([0, row_idx], self, :black)
-      end
-    end
+    grid[1] = Array.new(8) { |idx| Pawn.new([1, idx], self, :black) }
+    grid[6] = Array.new(8) { |idx| Pawn.new([6, idx], self, :white) }
+    grid[0] = [Rook.new([0,0], self, :black), Knight.new([0,1], self, :black),
+               Bishop.new([0,2], self, :black), Queen.new([0,3], self, :black),
+               King.new([0,4], self, :black), Bishop.new([0,5], self, :black),
+               Knight.new([0,6], self, :black), Rook.new([0,7], self, :black)]
+    grid[7] = [Rook.new([7,0], self, :white), Knight.new([7,1], self, :white),
+               Bishop.new([7,2], self, :white), Queen.new([7,3], self, :white),
+               King.new([7,4], self, :white), Bishop.new([7,5], self, :white),
+               Knight.new([7,6], self, :white), Rook.new([7,7], self, :white)]
     grid
   end
 

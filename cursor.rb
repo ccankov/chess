@@ -84,7 +84,7 @@ class Cursor
       toggle_selected
       if @selected_piece.nil?
         @selected_piece = @board[@cursor_pos]
-      else
+      else        
         @board.move_piece("TODO", @selected_piece.pos, @cursor_pos)
         @selected_piece = nil
       end
