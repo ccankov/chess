@@ -1,13 +1,16 @@
 require_relative 'modules.rb'
 require 'singleton'
+require 'byebug'
 
 class Piece
 
+  attr_reader :color
   attr_accessor :pos
 
-  def initialize(pos, board)
+  def initialize(pos, board, color)
     @pos = pos
     @board = board
+    @color = color
   end
 
   def to_s
@@ -24,7 +27,9 @@ class Piece
 
   def valid_moves
     possible_moves = moves
-    possible_moves.reject { |move| @board[move] }
+    possible_moves.select do |move|
+      @board[move].is_a?(NullPiece) || @board[move].color != @color
+    end
   end
 
   private
@@ -91,15 +96,70 @@ class Queen < Piece
 end
 
 class Pawn < Piece
-  def initialize
-
+  def symbol
+    :P
   end
+
+  def moves
+    move_diffs = forward_step
+    move_forward = []
+    move_diffs.each do |diff|
+      move_forward << [@pos[0] + diff[0], @pos[1]]
+    end
+    move_forward + side_attacks
+  end
+
+  protected
+
+  def at_start_row?
+    if @color == :white
+      @pos[0] == 6
+    else
+      @pos[0] == 1
+    end
+  end
+
+  def forward_dir
+    if @color == :white
+      [-1,0]
+    else
+      [1,0]
+    end
+  end
+
+  def forward_step
+    res_arr = []
+    res_arr << forward_dir
+    res_arr << forward_dir.map {|n| n * 2} if at_start_row?
+    res_arr
+  end
+
+  def side_attacks
+    side_att_pos = []
+    if @color == white
+      side_att_pos << [@pos[0] -1, @pos[1] - 1]
+      side_att_pos << [@pos[0] -1, @pos[1] + 1]
+    else
+      side_att_pos << [@pos[0] + 1, @pos[1] - 1]
+      side_att_pos << [@pos[0] + 1, @pos[1] + 1]
+    end
+    side_att_pos.select {|att_pos| @board[att_pos].color != @color}
+  end
+
 end
 
 class NullPiece < Piece
   include Singleton
 
   def initialize
+    @color = nil
+  end
 
+  def symbol
+    :_
+  end
+
+  def moves
+    []
   end
 end

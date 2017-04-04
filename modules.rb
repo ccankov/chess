@@ -27,7 +27,9 @@ module SlidingPiece
     current_pos = @pos.dup
     while current_pos[0].between?(0, 7) && current_pos[1].between?(0, 7)
       directional_moves << current_pos.dup unless current_pos == @pos
-      break if @board[current_pos] && current_pos != @pos
+      unless @board[current_pos].is_a?(NullPiece) || current_pos == @pos
+        break
+      end
       current_pos[0] += dx
       current_pos[1] += dy
     end

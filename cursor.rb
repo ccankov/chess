@@ -85,7 +85,7 @@ class Cursor
       if @selected_piece.nil?
         @selected_piece = @board[@cursor_pos]
       else
-        @board.move_piece("b", @selected_piece.pos, @cursor_pos)
+        @board.move_piece("TODO", @selected_piece.pos, @cursor_pos)
         @selected_piece = nil
       end
 

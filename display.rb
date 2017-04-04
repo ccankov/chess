@@ -23,7 +23,7 @@ class Display
         @board.grid.each_with_index do |row, idx|
           print "#{letter_coords[idx]}| "
           row.each_with_index do |piece, idx2|
-            label = piece.is_a?(Piece) ? "#{piece} " : "_ "
+            label = "#{piece} "
             if @cursor.cursor_pos == [idx, idx2]
               label = label.colorize(@cursor.color)
             end
@@ -32,7 +32,7 @@ class Display
           print "\n"
         end
         @cursor.get_input
-      rescue        
+      rescue
         @cursor.selected_piece = nil
         retry
       end
