@@ -1,6 +1,10 @@
 require_relative 'piece.rb'
 
 class Board
+
+  attr_reader :grid
+
+
   def initialize
     @grid = make_starting_grid
   end
@@ -21,9 +25,10 @@ class Board
 
   def move_piece(color, start_pos, to_pos)
     piece = self[start_pos]
-    raise "Invalid move" if piece.nil? #|| !piece.valid_moves.include?(to_pos)
+    raise "Invalid move" if piece.nil? || !piece.valid_moves.include?(to_pos)
     self[to_pos] = piece
     self[start_pos] = nil
+    piece.pos = to_pos
   end
 
   def checkmate?
@@ -34,14 +39,13 @@ class Board
 
   def make_starting_grid
     grid = Array.new(8) { Array.new(8) }
-    grid[0] = Array.new(8) {Piece.new}
-    # pawns = Array.new(8) { Pawn.new }
-    # back_row = [Rook.new, Knight.new, Bishop.new, Queen.new, King.new,
-    #             Bishop.new, Knight.new, Rook.new]
-    # grid[1] = pawns
-    # grid[-2] = pawns.dup
-    # grid.last = back_row
-    # grid.first = back_row.reverse
+    grid[0].each_index do |row_idx|
+      if row_idx == 0
+        grid[0][0] = Queen.new([0,0], self)
+      else
+        grid[0][row_idx] = Bishop.new([0, row_idx], self)
+      end
+    end
     grid
   end
 

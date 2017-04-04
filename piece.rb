@@ -1,35 +1,100 @@
-# require_relative 'king.rb'
-# require_relative 'queen.rb'
-# require_relative 'rook.rb'
-# require_relative 'bishop.rb'
-# require_relative 'knight.rb'
-# require_relative 'pawn.rb'
-# require_relative 'nullpiece.rb'
+require_relative 'modules.rb'
+require 'singleton'
 
 class Piece
-  def initialize
-    # TODO
+
+  attr_accessor :pos
+
+  def initialize(pos, board)
+    @pos = pos
+    @board = board
   end
 
   def to_s
-    # TODO
+    symbol.to_s
   end
 
   def empty?
-    # TODO
+    false
   end
 
   def symbol
-    # TODO
+    :P
   end
 
   def valid_moves
-    # TODO
+    possible_moves = moves
+    possible_moves.reject { |move| @board[move] }
   end
 
   private
 
   def move_into_check(to_pos)
     # TODO
+  end
+end
+
+class King < Piece
+  include SteppingPiece
+
+  def initialize
+
+  end
+end
+
+class Knight < Piece
+  include SteppingPiece
+
+  def initialize
+
+  end
+end
+
+class Bishop < Piece
+  include SlidingPiece
+
+  def symbol
+    :B
+  end
+
+  protected
+
+  def move_dirs
+    diagonal_dirs
+  end
+end
+
+class Rook < Piece
+  include SlidingPiece
+
+  def move_dirs
+    horizontal_dirs
+  end
+
+  def symbol
+    :R
+  end
+end
+
+class Queen < Piece
+  include SlidingPiece
+
+  def symbol
+    :Q
+  end
+
+end
+
+class Pawn < Piece
+  def initialize
+
+  end
+end
+
+class NullPiece < Piece
+  include Singleton
+
+  def initialize
+
   end
 end

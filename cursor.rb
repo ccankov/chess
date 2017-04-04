@@ -32,11 +32,13 @@ MOVES = {
 
 class Cursor
 
-  attr_reader :cursor_pos, :board
+  attr_reader :cursor_pos, :board, :color
 
   def initialize(cursor_pos, board)
     @cursor_pos = cursor_pos
     @board = board
+    @color = :red
+    @selected_piece = nil
   end
 
   def get_input
@@ -76,8 +78,33 @@ class Cursor
   end
 
   def handle_key(key)
+    case key
+    when :return, :space
+      toggle_selected
+      if @selected_piece.nil?
+        @selected_piece = @board[@cursor_pos]
+      else
+        @board.move_piece("b", @selected_piece.pos, @cursor_pos)
+        @selected_piece = nil
+      end
+
+    when :up, :left, :right, :down
+      update_pos(MOVES[key])
+    when :ctrl_c
+      Process.exit(0)
+    end
+
   end
 
   def update_pos(diff)
+    test_pos = @cursor_pos.dup
+    test_pos[0] += diff[0]
+    test_pos[1] += diff[1]
+
+    @cursor_pos = test_pos if test_pos.all? { |x| x.between?(0,7)}
+  end
+
+  def toggle_selected
+    @color = (@color == :red) ? :green : :red
   end
 end
