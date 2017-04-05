@@ -5,13 +5,18 @@ require 'byebug'
 require 'colorize'
 
 class Display
+
+  attr_reader :cursor
+
   def initialize(board)
     @board = board
     @cursor = Cursor.new([0, 0], board)
   end
 
-  def move(new_pos)
-    # TODO
+  def move
+    until @cursor.get_input.nil?
+      render      
+    end
   end
 
   def render

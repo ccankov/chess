@@ -84,17 +84,17 @@ class Cursor
       toggle_selected
       if @selected_piece.nil?
         @selected_piece = @board[@cursor_pos]
-      else        
-        @board.move_piece("TODO", @selected_piece.pos, @cursor_pos)
+      else
+        @board.move_piece(@selected_piece.pos, @cursor_pos)
         @selected_piece = nil
       end
-
     when :up, :left, :right, :down
       update_pos(MOVES[key])
     when :ctrl_c
       Process.exit(0)
+    else
+      @cursor_pos
     end
-
   end
 
   def update_pos(diff)
@@ -102,7 +102,8 @@ class Cursor
     test_pos[0] += diff[0]
     test_pos[1] += diff[1]
 
-    @cursor_pos = test_pos if test_pos.all? { |x| x.between?(0,7)}
+    @cursor_pos = test_pos if test_pos.all? { |x| x.between?(0, 7) }
+    @cursor_pos
   end
 
   def toggle_selected

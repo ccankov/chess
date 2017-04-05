@@ -12,21 +12,34 @@ class Game
   end
 
   def play
-    # TODO
+    until @board.checkmate?
+      @display.render
+      notify_players
+      begin
+        @display.move
+      rescue
+        @display.cursor.selected_piece = nil
+        @display.render
+        puts "Invalid move! #{@board.current_player.capitalize} play again."
+        retry
+      end
+      swap_turn!
+    end
   end
 
   private
 
   def notify_players
-    # TODO
+    puts "It is the #{@board.current_player} player's turn"
   end
 
   def swap_turn!
-    # TODO
+    player = @board.current_player
+    @board.current_player = player == :white ? :black : :white
   end
 end
 
 if __FILE__ == $PROGRAM_NAME
   game1 = Game.new
-  game1.display.render
+  game1.play
 end

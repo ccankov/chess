@@ -4,10 +4,12 @@ require 'byebug'
 class Board
 
   attr_reader :grid
+  attr_accessor :current_player
 
 
   def initialize(grid = make_starting_grid)
     @grid = grid
+    @current_player = :white
   end
 
   def [](pos)
@@ -22,7 +24,7 @@ class Board
 
   def dup
     empty_grid = Array.new(8) { Array.new(8, NullPiece.instance) }
-    new_board = Board.new(empty_grid)    
+    new_board = Board.new(empty_grid)
     @grid.each_with_index do |row, row_idx|
       row.each_with_index do |piece, col_idx|
         pos = [row_idx, col_idx]
@@ -36,9 +38,11 @@ class Board
     new_board
   end
 
-  def move_piece(color, start_pos, to_pos)
+  def move_piece(start_pos, to_pos)
     piece = self[start_pos]
-    raise "Invalid move" unless piece.valid_moves.include?(to_pos)
+    unless piece.valid_moves.include?(to_pos) && piece.color == @current_player
+      raise "Invalid move"
+    end
     self[to_pos] = piece
     self[start_pos] = NullPiece.instance
     piece.pos = to_pos
