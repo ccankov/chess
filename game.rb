@@ -25,6 +25,7 @@ class Game
       end
       swap_turn!
     end
+    puts "Checkmate!"
   end
 
   private

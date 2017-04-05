@@ -14,7 +14,7 @@ class Piece
   end
 
   def to_s
-    symbol.to_s
+    symbol.encode('utf-8')
   end
 
   def empty?
@@ -36,7 +36,7 @@ class Piece
   end
 
   def valid_moves_avoiding_check(possible_moves)
-    possible_moves.reject do |move|      
+    possible_moves.reject do |move|
       potential_board = @board.dup
       piece = potential_board[@pos]
       potential_board[@pos] = NullPiece.instance
@@ -62,7 +62,7 @@ class King < Piece
   end
 
   def symbol
-    :K
+    @color == :white ? "\u2654" : "\u265A"
   end
 end
 
@@ -70,7 +70,7 @@ class Knight < Piece
   include SteppingPiece
 
   def symbol
-    :H
+    @color == :white ? "\u2658" : "\u265E"
   end
 end
 
@@ -78,7 +78,7 @@ class Bishop < Piece
   include SlidingPiece
 
   def symbol
-    :B
+    @color == :white ? "\u2657" : "\u265D"
   end
 
   protected
@@ -96,7 +96,7 @@ class Rook < Piece
   end
 
   def symbol
-    :R
+    @color == :white ? "\u2656" : "\u265C"
   end
 end
 
@@ -104,14 +104,14 @@ class Queen < Piece
   include SlidingPiece
 
   def symbol
-    :Q
+    @color == :white ? "\u2655" : "\u265B"
   end
 
 end
 
 class Pawn < Piece
   def symbol
-    :P
+    @color == :white ? "\u2659" : "\u265F"
   end
 
   def moves
@@ -176,7 +176,7 @@ class NullPiece < Piece
   end
 
   def symbol
-    :_
+    "_"
   end
 
   def moves
