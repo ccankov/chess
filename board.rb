@@ -1,12 +1,13 @@
 require_relative 'piece.rb'
+require 'byebug'
 
 class Board
 
   attr_reader :grid
 
 
-  def initialize
-    @grid = make_starting_grid
+  def initialize(grid = make_starting_grid)
+    @grid = grid
   end
 
   def [](pos)
@@ -20,7 +21,19 @@ class Board
   end
 
   def dup
-    # TODO
+    empty_grid = Array.new(8) { Array.new(8, NullPiece.instance) }
+    new_board = Board.new(empty_grid)    
+    @grid.each_with_index do |row, row_idx|
+      row.each_with_index do |piece, col_idx|
+        pos = [row_idx, col_idx]
+        if piece.is_a?(NullPiece)
+          new_board[pos] = piece
+        else
+          new_board[pos] = piece.class.new(piece.pos.dup, new_board, piece.color)
+        end
+      end
+    end
+    new_board
   end
 
   def move_piece(color, start_pos, to_pos)
@@ -32,7 +45,21 @@ class Board
   end
 
   def checkmate?
-    # TODO
+    return false unless in_check?(:white) || in_check?(:black)
+    check_color = in_check?(:white) ? :white : :black
+    player_pieces = @grid.flatten.find_all do |piece|
+      piece.color == check_color
+    end
+    player_pieces.all? { |piece| piece.valid_moves == [] }
+  end
+
+  def in_check?(color)
+    king_pos = find_king(color).pos
+    threatening_piece = @grid.flatten.find do |piece|
+      !piece.is_a?(NullPiece) && piece.color != color &&
+        piece.moves.include?(king_pos)
+    end
+    !threatening_piece.nil?
   end
 
   protected
@@ -53,6 +80,8 @@ class Board
   end
 
   def find_king(color)
-    # TODO
+    @grid.flatten.find do |piece|
+      piece.is_a?(King) && piece.color == color
+    end
   end
 end

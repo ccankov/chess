@@ -1,5 +1,6 @@
 require_relative 'modules.rb'
 require 'singleton'
+require 'byebug'
 
 class Piece
 
@@ -26,9 +27,22 @@ class Piece
 
   def valid_moves
     possible_moves = moves
-    possible_moves.select do |move|
+    possible_moves = possible_moves.select do |move|
       move[0].between?(0, 7) && move[1].between?(0, 7) &&
       (@board[move].is_a?(NullPiece) || @board[move].color != @color)
+    end
+    #debugger
+    valid_moves_avoiding_check(possible_moves)
+  end
+
+  def valid_moves_avoiding_check(possible_moves)
+    possible_moves.reject do |move|      
+      potential_board = @board.dup
+      piece = potential_board[@pos]
+      potential_board[@pos] = NullPiece.instance
+      piece.pos = move
+      potential_board[move] = piece
+      potential_board.in_check?(@color)
     end
   end
 
@@ -146,6 +160,7 @@ class Pawn < Piece
       side_att_pos << [@pos[0] + 1, @pos[1] + 1]
     end
     side_att_pos.select do |att_pos|
+      att_pos[0].between?(0, 7) && att_pos[1].between?(0, 7) &&
       @board[att_pos].color != @color &&
       !@board[att_pos].is_a?(NullPiece)
     end
